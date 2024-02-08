@@ -4,11 +4,13 @@
       <h2>Form Elements</h2>
       <div class="input-field-heading">
         <label class="input-label">Input Field</label >
-        <input class="input-focuse" type="text" placeholder="Input Placeholder">
+        <input class="input-focuse" type="text" v-model="textInput" placeholder="Input Placeholder" @input="validateInput">
+        <p v-if="!isValid" class="error-message">Please enter only text.</p>
       </div>
       <div class="input-field-heading">
         <label class="input-label">Input Field Focus</label >
-        <input class="input-focus" type="text" placeholder="" @input="handleInput">
+        <input class="input-focus" type="text" placeholder="" @input="handleInput" v-model="textFocus">
+        <p v-if="!isValidate" class="error-message">Please enter only text.</p>
       </div>
       <div class="input-field-heading">
         <label class="input-label">Input Field Disabled</label >
@@ -16,7 +18,7 @@
       </div>
       <div class="input-field-heading">
         <label class="input-label">Input Field Error</label >
-        <input class="input-focus error" placeholder="Input Placeholder" >
+        <input class="input-focus error" type="text" placeholder="Input Placeholder" >
       </div><br>
   
      <div class="amount-container">
@@ -31,7 +33,7 @@
      </div><br>
   
      <div class="input-field-heading">
-      <input class="input-focus-increment" type="number" v-model="value" @input="handleChange" />
+      <input class="input-focus-increment" type="number" v-model="value" @input="handleChange" required :class="{ error: value < 0 }" />
      </div>
      
      <div class="input-field-heading">
@@ -52,7 +54,11 @@ import DropdownComponent from './DropdownComponent.vue'
       return {
         isFocused: false,
         currency: '$',
-        value: 0
+        value: 0,
+        textInput: '',
+        isValid: true,
+        textFocus:'',
+        isValidate:true
       };
     },
     components: {
@@ -61,7 +67,14 @@ import DropdownComponent from './DropdownComponent.vue'
     methods: {
       handleInput() {
         this.isFocused = true;
+        const regex = /^[A-Za-z\s]+$/;
+        this.isValidate = regex.test(this.textFocus);
       },
+      validateInput() {
+      // Regex to allow only alphabets and spaces
+      const regex = /^[A-Za-z\s]+$/;
+      this.isValid = regex.test(this.textInput);
+    },
       handleChange(event) {
         this.value = event.target.value;
       }
@@ -105,7 +118,9 @@ import DropdownComponent from './DropdownComponent.vue'
     background-color: #ffe6e6;
     color: #333;  
   }
-  
+  .error-message {
+  color: red;
+}
   .amount-container{
     display: flex;
     flex-direction: row;
@@ -127,7 +142,7 @@ import DropdownComponent from './DropdownComponent.vue'
     font-size: 16px;
     outline: none;
   }
-  
+
   .currency-amount {
     width: 45px;
     border: 1px solid;
